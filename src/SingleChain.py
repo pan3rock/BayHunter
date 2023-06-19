@@ -150,7 +150,7 @@ class SingleChain(object):
         return init_noise, corrfix
 
     def draw_initvpvs(self):
-        if type(self.priors['vpvs']) == np.float:
+        if type(self.priors['vpvs']) == np.float32:
             return self.priors['vpvs']
 
         vpvsmin, vpvsmax = self.priors['vpvs']

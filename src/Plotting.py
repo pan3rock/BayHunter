@@ -479,9 +479,9 @@ class PlotFromStorage(object):
 
         # get interfaces, #first
         models2 = ModelMatrix._replace_zvnoi_h(models)
-        models2 = np.array([model[~np.isnan(model)] for model in models2])
+        models2 = np.array([model[~np.isnan(model)] for model in models2], dtype=object)
         yinterf = np.array([np.cumsum(model[int(model.size/2):-1])
-                            for model in models2])
+                            for model in models2], dtype=object)
         yinterf = np.concatenate(yinterf)
 
         vss_int, deps_int = ModelMatrix.get_interpmodels(models, dep_int)
@@ -523,7 +523,7 @@ class PlotFromStorage(object):
         data = axes[1].hist(yinterf, bins=depbins, orientation='horizontal',
                             color='lightgray', alpha=0.7,
                             edgecolor='k')
-        bins, lay_bin, _ = np.array(data).T
+        bins, lay_bin, _ = np.array(data, dtype=object).T
         center_lay = (lay_bin[:-1] + lay_bin[1:]) / 2.
 
         axes[0].set_ylabel('Depth in km')
@@ -609,7 +609,7 @@ class PlotFromStorage(object):
         models, = self._get_posterior_data(['models'], final, chainidx)
 
         # get interfaces
-        models = np.array([model[~np.isnan(model)] for model in models])
+        models = np.array([model[~np.isnan(model)] for model in models], dtype=object)
         layers = np.array([(model.size/2 - 1) for model in models])
 
         bins = np.arange(np.min(layers), np.max(layers)+2)-0.5
@@ -1151,10 +1151,10 @@ class PlotFromStorage(object):
         return fig
 
     def merge_pdfs(self):
-        from PyPDF2 import PdfFileReader, PdfFileWriter
+        from PyPDF2 import PdfReader, PdfWriter
 
         outputfile = op.join(self.figpath, 'c_summary.pdf')
-        output = PdfFileWriter()
+        output = PdfWriter()
         pdffiles = glob.glob(op.join(self.figpath + os.sep + 'c_*.pdf'))
         pdffiles.sort(key=op.getmtime)
 
@@ -1162,9 +1162,9 @@ class PlotFromStorage(object):
             if pdffile == outputfile:
                 continue
 
-            document = PdfFileReader(open(pdffile, 'rb'))
-            for i in range(document.getNumPages()):
-                output.addPage(document.getPage(i))
+            document = PdfReader(open(pdffile, 'rb'))
+            for i in range(len(document.pages)):
+                output.add_page(document.pages[i])
 
         with open(outputfile, "wb") as f:
             output.write(f)

@@ -202,7 +202,7 @@ class ModelMatrix(object):
         # in PlotFromStorage posterior_models2d
         data = np.histogram2d(vss_int.flatten(), deps_int.flatten(),
                               bins=(vsbins, dep_int))
-        bins, vs_bin, dep_bin = np.array(data).T
+        bins, vs_bin, dep_bin = np.array(data, dtype=object).T
         vs_center = (vs_bin[:-1] + vs_bin[1:]) / 2.
         dep_center = (dep_bin[:-1] + dep_bin[1:]) / 2.
         vs_mode = vs_center[np.argmax(bins.T, axis=1)]
